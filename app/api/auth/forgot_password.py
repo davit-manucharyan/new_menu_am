@@ -17,7 +17,7 @@ body = f"""You're receiving this email because you or someone else has requested
           If you did not request a password reset you can safely ignore this emai
           """
 
-sender = "email for sayt"
+sender = "dinaras.alexander@gmail.com"
 
 recipients = []
 

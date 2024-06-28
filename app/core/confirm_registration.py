@@ -24,7 +24,7 @@ body = f"""Dear user,
 recipients = []
 
 
-sender = "email for sayt"
+sender = "dinaras.alexander@gmail.com"
 
 password = "password [email pin]"
 
