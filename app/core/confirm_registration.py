@@ -26,15 +26,9 @@ recipients = []
 
 sender = "dinaras.alexander@gmail.com"
 
-password = "password [email pin]"
+password = "sozx xawb ntjf bidr"
 
 
 def mail_verification_email(email):
     recipients.append(email)
     send_email(subject, body, sender, recipients, password)
-
-
-
-
-
-

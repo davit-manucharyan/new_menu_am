@@ -1,7 +1,14 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, ARRAY, LargeBinary, Boolean
+from os import path
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, ARRAY, LargeBinary, Boolean, orm
 from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
-from app.database import Base
+from sqlalchemy.engine import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@localhost/new_menu_am"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+Base = declarative_base()
 
 
 class User(Base):
@@ -78,10 +85,3 @@ class Restaurant(Base):
     logo = Column(String, nullable=False)  # image
     background_image = Column(String, nullable=False)
     rating = Column(Float, nullable=False)
-
-
-
-
-
-
-

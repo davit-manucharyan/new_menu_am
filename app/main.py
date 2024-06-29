@@ -10,7 +10,7 @@ from psycopg2.extras import RealDictCursor
 
 
 from database import engine
-from app.models.models import Base
+from models.models import Base
 
 
 Base.metadata.create_all(bind=engine)
@@ -20,7 +20,7 @@ while True:
         conn = psycopg2.connect(
             host='127.0.0.1',
             port=5432,
-            database='post_blog',
+            database='new_menu_am',
             user='postgres',
             password='password',
             cursor_factory=RealDictCursor

@@ -21,7 +21,7 @@ sender = "dinaras.alexander@gmail.com"
 
 recipients = []
 
-password = "password [email pin]"
+password = "sozx xawb ntjf bidr"
 
 
 @forgot_router.get("/forgot_password")
@@ -63,8 +63,4 @@ def reset_password(reset_data: PasswordReset):
 
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": "Password changed successfully"})
-
-
-
-
 
