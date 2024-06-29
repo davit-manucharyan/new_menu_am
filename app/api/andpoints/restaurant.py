@@ -1,9 +1,9 @@
 from fastapi import HTTPException, status, Depends, APIRouter
 from fastapi.responses import JSONResponse
 
-from app import main
-from app.core import security
-from app.schemas.shemas import RestaurantAdd, UpdateRestaurant
+import main
+# from app.core import security
+from schemas.shemas import RestaurantAdd, UpdateRestaurant
 
 
 restaurant_router = APIRouter(tags=["restaurant"], prefix="/restaurant")

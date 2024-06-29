@@ -1,5 +1,4 @@
-
-from app.services.service_email import send_email
+from services.service_email import send_email
 import random
 import string
 

@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 
-from app import main
-from app.services.service_email import send_email
-from app.schemas.shemas import PasswordReset
 
-forgot_router = APIRouter(tags=["forgot"])
+import main
+from services.service_email import send_email
+from schemas.shemas import PasswordReset
+
+forgot_router = APIRouter(tags=["forgot"], prefix="/forgot")
 
 subject = "Password Reset E-mail"
 URL = "http://127.0.0.1:8000/reset_password"

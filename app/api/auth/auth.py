@@ -5,14 +5,14 @@ import datetime
 # FastAPI
 from fastapi import HTTPException, status, Depends, APIRouter
 from fastapi.responses import JSONResponse
-from app import main
-from app.core.confirm_registration import mail_verification_email
+import main
+from core.confirm_registration import mail_verification_email
 
-from app.core import security
+from core import security
 
-from app.schemas.shemas import UserAdd, UserLogin
+from schemas.shemas import UserAdd, UserLogin
 
-# TODO
+
 auth_router = APIRouter(tags=["auth"], prefix="/auth")
 
 

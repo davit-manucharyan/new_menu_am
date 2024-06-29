@@ -10,12 +10,12 @@ from psycopg2.extras import RealDictCursor
 
 
 from database import engine
-from app.models.models import Base
+from models.models import Base
 
 
-from app.api.andpoints.restaurant import restaurant_router
-from app.api.auth.auth import auth_router
-from app.api.auth.forgot_password import forgot_router
+from api.andpoints.restaurant import restaurant_router
+from api.auth.auth import auth_router
+from api.auth.forgot_password import forgot_router
 
 
 Base.metadata.create_all(bind=engine)
