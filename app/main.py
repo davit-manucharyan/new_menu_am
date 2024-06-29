@@ -3,6 +3,9 @@ import time
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 # SQL - postgres
 import psycopg2
@@ -41,6 +44,16 @@ while True:
 
 app = FastAPI()
 
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def main():
