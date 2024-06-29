@@ -146,5 +146,3 @@ def login(login_data: UserLogin):
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"Message": "Successfully logged in! Your access token",
                                  "access_token": access_token})
-
-
