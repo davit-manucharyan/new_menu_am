@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, ARRAY, LargeBinary, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, text, Float, ARRAY, LargeBinary, Boolean
 from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
 from database import Base
@@ -8,13 +8,13 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String(20), nullable=False)
-    email = Column(String(45), nullable=False, unique=True)
-    password = Column(String(15), nullable=False)
-    phone_numbers = Column(Integer, nullable=False)
-    address = Column(String, nullable=False)
-    status = Column(Boolean, nullable=False, server_default="False")
-    card_id = Column(Integer, ForeignKey("cards.card_id"))
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    status = Column(Boolean, nullable=True, server_default="False")
+    created_at = Column(TIMESTAMP, nullable=False, server_default=text("now()"))
 
 
 class Card(Base):

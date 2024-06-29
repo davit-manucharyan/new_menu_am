@@ -40,16 +40,29 @@ def verify_email(email: str):
 def add_user(user_data: UserAdd):
     user_password = user_data.password
     user_hashed_password = security.hash_password(user_password)
+
+    main.cursor.execute(
+        "SELECT email FROM users WHERE email = %s",
+        (user_data.email,)
+    )
+    check_email = main.cursor.fetchone()
+    if check_email:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Email is already exists"
+        )
+
     try:
-        main.cursor.execute("""INSERT INTO users (name, email, password, created_at)
-                            VALUES (%s, %s, %s, %s) RETURNING *""",
+        main.cursor.execute("""INSERT INTO users (name, email, password)
+                            VALUES (%s, %s, %s) RETURNING *""",
                             (user_data.name,
                              user_data.email,
-                             user_hashed_password,
-                             str(datetime.datetime.now()).split('.')[0]))
+                             user_hashed_password))
     except Exception as error:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error
+        )
 
     try:
         user = main.cursor.fetchone()
@@ -63,13 +76,6 @@ def add_user(user_data: UserAdd):
                             detail="User not created")
 
     mail_verification_email(user_data.email)
-
-    main.conn.commit()
-
-    user_id = dict(user).get("user_id")
-    main.cursor.execute("""INSERT INTO user_settings (language, background_color, font_size, user_id) 
-                            VALUES (%s, %s, %s, %s) """,
-                        ("en", "white", 12.0, user_id))
 
     main.conn.commit()
 
