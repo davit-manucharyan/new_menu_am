@@ -17,11 +17,11 @@ body = f"""You're receiving this email because you or someone else has requested
           If you did not request a password reset you can safely ignore this emai
           """
 
-sender = "dinaras.alexander@gmail.com"
+sender = "niddleproject@gmail.com"
 
 recipients = []
 
-password = "password [email pin]"
+password = "ngzr kwsw jvcs oiae"
 
 
 @forgot_router.get("/forgot_password")

@@ -24,9 +24,9 @@ body = f"""Dear user,
 recipients = []
 
 
-sender = "dinaras.alexander@gmail.com"
+sender = "niddleproject@gmail.com"
 
-password = "password [email pin]"
+password = "ngzr kwsw jvcs oiae"
 
 
 def mail_verification_email(email):

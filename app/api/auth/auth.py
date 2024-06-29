@@ -13,10 +13,10 @@ from app.core import security
 from app.schemas.shemas import UserAdd, UserLogin
 
 # TODO
-auth_router = APIRouter(tags=["auth"])
+auth_router = APIRouter(tags=["auth"], prefix="/auth")
 
 
-@auth_router.post("/mail_verification")
+@auth_router.get("/mail_verification/{email}")
 def verify_email(email: str):
 
     main.cursor.execute("""SELECT email FROM users WHERE email=%s""",
@@ -91,7 +91,7 @@ def get_user_by_id(user_id: int, current_user=Depends(security.get_current_user)
 
     try:
         user = main.cursor.fetchone()
-        print(user)
+
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail="Error occurred while trying to fetch selected user "
@@ -123,22 +123,21 @@ def login(login_data: UserLogin):
                         (user_email,))
     user = main.cursor.fetchone()
 
+    user = dict(user)
+    if not user.get("status"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail={"message": """You cannot log in because you have not 
+                                        completed authentication. Please check your email."""})
+
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User with email '{user_email}' was not found!")
 
-    user = dict(user)
     user_hashed_password = user.get("password")
 
     if not security.verify_password(login_data.password, user_hashed_password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"Wrong password")
-
-    if not user.get("status"):
-
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail={"message": """You cannot log in because you have not 
-                                    completed authentication. Please check your email."""})
 
     user_id = user.get("user_id")
     access_token = security.create_access_token({"user_id": user_id})
