@@ -20,12 +20,12 @@ body = f"""You're receiving this email because you or someone else has requested
 
 sender = "niddleproject@gmail.com"
 
-recipients = []
+
 
 password = "ngzr kwsw jvcs oiae"
 
 
-@forgot_router.get("/forgot_password")
+@forgot_router.get("/forgot_password/{email}")
 def forgot_password(email):
     main.cursor.execute("""SELECT * FROM users WHERE email=%s""",
                         (email,))
@@ -37,8 +37,7 @@ def forgot_password(email):
                             detail=f"User with email '{email}' was not found!")
 
     else:
-        recipients.append(email)
-        send_email(subject, body, sender, recipients, password)
+        send_email(subject, body, sender, email, password)
 
 
 @forgot_router.post('/reset_password')
