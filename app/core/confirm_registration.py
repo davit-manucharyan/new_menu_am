@@ -9,7 +9,7 @@ import string
 
 def mail_body(email):
 
-    URL = f"http://127.0.0.1:8080/auth/mail_verification"
+    URL = f"http://127.0.0.1:8000/auth/mail_verification"
 
     return f"""Dear user,
             Thank you for creating your account.

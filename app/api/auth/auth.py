@@ -129,15 +129,16 @@ def login(login_data: UserLogin):
                         (user_email,))
     user = main.cursor.fetchone()
 
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"User with email '{user_email}' was not found!")
+
     user = dict(user)
     if not user.get("status"):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail={"message": """You cannot log in because you have not 
                                         completed authentication. Please check your email."""})
 
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"User with email '{user_email}' was not found!")
 
     user_hashed_password = user.get("password")
 
