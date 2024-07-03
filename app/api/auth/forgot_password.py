@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 
-from app import main
-from app.services.service_email import send_email
-from app.schemas.shemas import PasswordReset
 
-forgot_router = APIRouter(tags=["forgot"])
+import main
+from services.service_email import send_email
+from schemas.shemas import PasswordReset
+
+forgot_router = APIRouter(tags=["forgot"], prefix="/forgot")
 
 subject = "Password Reset E-mail"
 URL = "http://127.0.0.1:8000/reset_password"
@@ -17,14 +18,14 @@ body = f"""You're receiving this email because you or someone else has requested
           If you did not request a password reset you can safely ignore this emai
           """
 
-sender = "dinaras.alexander@gmail.com"
-
-recipients = []
-
-password = "sozx xawb ntjf bidr"
+sender = "niddleproject@gmail.com"
 
 
-@forgot_router.get("/forgot_password")
+
+password = "ngzr kwsw jvcs oiae"
+
+
+@forgot_router.get("/forgot_password/{email}")
 def forgot_password(email):
     main.cursor.execute("""SELECT * FROM users WHERE email=%s""",
                         (email,))
@@ -36,8 +37,7 @@ def forgot_password(email):
                             detail=f"User with email '{email}' was not found!")
 
     else:
-        recipients.append(email)
-        send_email(subject, body, sender, recipients, password)
+        send_email(subject, body, sender, email, password)
 
 
 @forgot_router.post('/reset_password')
@@ -63,4 +63,8 @@ def reset_password(reset_data: PasswordReset):
 
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": "Password changed successfully"})
+
+
+
+
 

@@ -1,27 +1,20 @@
-from os import path
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, ARRAY, LargeBinary, Boolean, orm
+from sqlalchemy import Column, Integer, String, ForeignKey, text, Float, ARRAY, LargeBinary, Boolean
 from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
-from sqlalchemy.engine import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:password@localhost/new_menu_am"
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-Base = declarative_base()
+from database import Base
 
 
 class User(Base):
     __tablename__ = "users"
 
     user_id = Column(Integer, nullable=False, primary_key=True)
-    name = Column(String(20), nullable=False)
-    email = Column(String(45), nullable=False, unique=True)
-    password = Column(String(15), nullable=False)
-    phone_numbers = Column(Integer, nullable=False)
-    address = Column(String, nullable=False)
-    status = Column(Boolean, nullable=False, server_default="False")
-    card_id = Column(Integer, ForeignKey("cards.card_id"))
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+    status = Column(Boolean, nullable=True, server_default="False")
+    created_at = Column(TIMESTAMP, nullable=False, server_default=text("now()"))
 
 
 class Card(Base):
@@ -85,3 +78,10 @@ class Restaurant(Base):
     logo = Column(String, nullable=False)  # image
     background_image = Column(String, nullable=False)
     rating = Column(Float, nullable=False)
+
+
+
+
+
+
+
