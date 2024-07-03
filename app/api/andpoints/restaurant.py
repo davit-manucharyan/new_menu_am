@@ -15,8 +15,6 @@ def add_restaurant(restaurant_name: str = Form(...), restaurant_email: str = For
                    address: str = Form(...), rating: float = Form(), image_logo: UploadFile = File(...),
                    image_background: UploadFile = File(...)):
 
-
-
     current_date_time = (datetime.datetime.now().strftime('%B %d %Y - %H_%M_%S'))
     image_logo_url = f"{os.getcwd()}/static/images/logo/{current_date_time}{image_logo.filename}"
     image_background_url = f"{os.getcwd()}/static/images/background/{current_date_time}{image_background.filename}"
