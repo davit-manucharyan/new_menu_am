@@ -18,20 +18,30 @@ auth_router = APIRouter(tags=["auth"], prefix="/auth")
 
 @auth_router.get("/mail_verification/{email}")
 def verify_email(email: str):
+    try:
 
-    main.cursor.execute("""SELECT email FROM users WHERE email=%s""",
+        main.cursor.execute("""SELECT email FROM users WHERE email=%s""",
                         (email,))
+
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+           detail={"message": f"There was a error looking up the user in the authentication pool\n{error}"})
 
     email_checked = main.cursor.fetchone()
 
     if email_checked is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail={"message": "User not found"})
+    try:
 
-    main.cursor.execute("""UPDATE users SET status=%s WHERE email=%s""",
-                        (True, email))
+        main.cursor.execute("""UPDATE users SET status=%s WHERE email=%s""",
+                            (True, email))
 
-    main.conn.commit()
+        main.conn.commit()
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail={"message": f"An error occurred while updating user data\n{error}"})
+
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": "You have successfully passed the verification"})
 
@@ -40,12 +50,16 @@ def verify_email(email: str):
 def add_user(user_data: UserAdd):
     user_password = user_data.password
     user_hashed_password = security.hash_password(user_password)
+    try:
+        main.cursor.execute(
+            "SELECT email FROM users WHERE email = %s",
+            (user_data.email,))
+        check_email = main.cursor.fetchone()
 
-    main.cursor.execute(
-        "SELECT email FROM users WHERE email = %s",
-        (user_data.email,)
-    )
-    check_email = main.cursor.fetchone()
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail={"message": error})
+
     if check_email:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -113,10 +127,15 @@ def get_user_by_id(user_id: int, current_user=Depends(security.get_current_user)
 
 @auth_router.delete("/delete-user/{user_id}")
 def delete_user(user_id: int):
-    main.cursor.execute("""delete from users where user_id=%s""",
+    try:
+        main.cursor.execute("""delete from users where user_id=%s""",
                         (user_id,))
 
-    main.conn.commit()
+        main.conn.commit()
+    except Exception as error:
+        main.conn.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail={"message": error})
 
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": "Successfully deleted"})
@@ -125,9 +144,14 @@ def delete_user(user_id: int):
 @auth_router.post("/login")
 def login(login_data: UserLogin):
     user_email = login_data.email
-    main.cursor.execute("""SELECT * FROM users WHERE email=%s""",
+    try:
+        main.cursor.execute("""SELECT * FROM users WHERE email=%s""",
                         (user_email,))
-    user = main.cursor.fetchone()
+        user = main.cursor.fetchone()
+
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail={"message": error})
 
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -138,7 +162,6 @@ def login(login_data: UserLogin):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail={"message": """You cannot log in because you have not 
                                         completed authentication. Please check your email."""})
-
 
     user_hashed_password = user.get("password")
 
