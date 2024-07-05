@@ -32,19 +32,9 @@ class UpdateRestaurant(BaseModel):
     rating: float
 
 
-class UpdateRestaurantImages(BaseModel):
-    logo: bytes
-    background: bytes
-
-
-class FoodAdd(BaseModel):
-    kind: str
-    price: float
-    cook_time: int
-    image: str
-    food_name: str
-    description: str
-    restaurant_id: int
+# class UpdateRestaurantImages(BaseModel):
+#     logo: bytes
+#     background: bytes
 
 
 class UpdateFood(BaseModel):
@@ -52,9 +42,12 @@ class UpdateFood(BaseModel):
     kind: str
     price: float
     cook_time: int
-    image: str
     food_name: str
     description: str
     restaurant_id: int
+#
+#
+# class UpdateFoodImage(BaseModel):
+#     food_image: str
 
 

@@ -98,7 +98,7 @@ def add_user(user_data: UserAdd):
 
 
 @auth_router.get("/get-one-user-by-id/{user_id}")
-def get_user_by_id(user_id: int, current_user=Depends(security.get_current_user)):
+def get_user_by_id(user_id: int):
     try:
         main.cursor.execute("""SELECT * FROM users WHERE user_id=%s""",
                             (user_id,))
@@ -177,3 +177,26 @@ def login(login_data: UserLogin):
                                  "access_token": access_token})
 
 
+@auth_router.get("/get_all_users")
+def get_all_restaurants():
+    try:
+        main.cursor.execute("""SELECT * FROM restaurants""")
+
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail={"message": error})
+
+    try:
+
+        users = main.cursor.fetchall()
+
+    except Exception as error:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="An error occurred while searching for all restaurants"
+                            f"ERROR: {error}")
+
+    if users is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Restaurants were not found!")
+
+    return users
