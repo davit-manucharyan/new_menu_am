@@ -44,5 +44,8 @@ class UpdateRestaurant(BaseModel):
     logo: str
 
 
-
-
+class RestaurantWorkTimeAdd(BaseModel):
+    restaurant_id: str
+    day_of_week: str
+    opening_time: str
+    closing_time: str

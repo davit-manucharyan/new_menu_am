@@ -62,8 +62,8 @@ class WorkTime(Base):
 
     work_time_id = Column(Integer, nullable=False, primary_key=True)
     day_of_week = Column(String, nullable=False)
-    opening_time = Column(Time, nullable=False)
-    closing_time = Column(Time, nullable=False)
+    opening_time = Column(String, nullable=False)
+    closing_time = Column(String, nullable=False)
     restaurant_id = Column(Integer, ForeignKey("restaurants.restaurant_id"))
 
 

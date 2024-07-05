@@ -12,7 +12,7 @@ restaurant_router = APIRouter(tags=["restaurant"], prefix="/restaurant")
 @restaurant_router.post("/add_restaurant")
 def add_restaurant(data: RestaurantAdd):
     try:
-        main.cursor.execute("""INSERT INTO comments (restaurant_name, restaurant_email, phone_number,
+        main.cursor.execute("""INSERT INTO restaurants (restaurant_name, restaurant_email, phone_number,
                                 address, rating, background_image, logo) VALUES (%s, %s, %s, %s, %s, %s, %s)""",
                             (data.restaurant_name, data.restaurant_email,
                              data.phone_number, data.address, data.rating, data.logo,
