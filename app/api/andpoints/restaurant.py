@@ -127,10 +127,16 @@ def delete_restaurant(restaurant_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Restaurant not found")
 
-    main.cursor.execute("""DELETE FROM restaurants WHERE restaurant_id=%s""",
-                        (restaurant_id,))
+    try:
+        main.cursor.execute("""DELETE FROM restaurants WHERE restaurant_id=%s""",
+                            (restaurant_id,))
 
-    main.conn.commit()
+        main.conn.commit()
+
+    except Exception as error:
+        main.conn.rollback()
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail={"message": error})
 
     return JSONResponse(status_code=status.HTTP_200_OK,
                         content={"message": "Restaurant successfully deleted"})

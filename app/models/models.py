@@ -22,9 +22,10 @@ class Card(Base):
 
     card_id = Column(Integer, nullable=False, primary_key=True)
     card_number = Column(Integer, nullable=False)
-    card_valid_thru = Column(String(7), nullable=False)  # "MM/YYYY"
+    card_valid_thru = Column(String, nullable=False)  # "MM/YYYY"
     card_name = Column(String, nullable=False)
     card_cvv = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.user_id"))
 
 
 class Order(Base):
@@ -79,7 +80,7 @@ class Restaurant(Base):
     background_image = Column(String, nullable=False)
     rating = Column(Float, nullable=False)
 
-    
+
 
 
 
