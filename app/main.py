@@ -15,6 +15,8 @@ from database import engine
 from models.models import Base
 
 
+from api.andpoints.food import food_router
+from api.andpoints.favorite_foods import favorite_foods_router
 from api.andpoints.restaurant import restaurant_router
 from api.andpoints.restaurant_work_time import restaurant_work_time_router
 from api.auth.auth import auth_router
@@ -61,6 +63,8 @@ def main():
     return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "OK"})
 
 
+app.include_router(food_router)
+app.include_router(favorite_foods_router)
 app.include_router(restaurant_router)
 app.include_router(auth_router)
 app.include_router(forgot_router)

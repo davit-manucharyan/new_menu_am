@@ -11,7 +11,6 @@ class UserAdd(BaseModel):
 class UserOut(BaseModel):
     name: str
     email: EmailStr
-    # main_photo: bytes
 
 
 class UserLogin(BaseModel):
@@ -25,23 +24,22 @@ class PasswordReset(BaseModel):
     confirm_password: str
 
 
-class RestaurantAdd(BaseModel):
-    restaurant_name: str
-    restaurant_email: str
-    phone_number: str
-    address: str
-    rating: float
-    background_image: str
-    logo: str
-
-
 class UpdateRestaurant(BaseModel):
     restaurant_name: str
     restaurant_email: str
     phone_number: str
     rating: float
-    background_image: str
-    logo: str
+
+
+class UpdateFood(BaseModel):
+
+    kind: str
+    price: float
+    cook_time: int
+    food_name: str
+    description: str
+    restaurant_id: int
+
 
 
 class RestaurantWorkTimeAdd(BaseModel):
