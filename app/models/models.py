@@ -80,9 +80,3 @@ class Restaurant(Base):
     background_image = Column(String, nullable=False)
     rating = Column(Float, nullable=False)
 
-
-
-
-
-
-
