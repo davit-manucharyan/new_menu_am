@@ -11,7 +11,7 @@ food_router = APIRouter(tags=["food"], prefix="/food")
 
 
 @food_router.post("/add_food/{restaurant_id}")
-def add_restaurant(restaurant_id: int, kind: str = Form(...), price: int = Form(...),
+def add_food(restaurant_id: int, kind: str = Form(...), price: int = Form(...),
                    cook_time: int = Form(...), food_name: str = Form(...), description: str = Form(...),
                    image_food: UploadFile = File(...)):
 
