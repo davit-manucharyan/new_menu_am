@@ -191,6 +191,3 @@ def get_all_restaurants():
                             detail=f"Restaurants were not found!")
 
     return restaurants
-
-
-
