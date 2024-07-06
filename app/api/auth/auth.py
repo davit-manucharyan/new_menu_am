@@ -183,7 +183,7 @@ def login(login_data: UserLogin):
 @auth_router.get("/get_all_users")
 def get_all_restaurants():
     try:
-        main.cursor.execute("""SELECT * FROM restaurants""")
+        main.cursor.execute("""SELECT * FROM users""")
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
