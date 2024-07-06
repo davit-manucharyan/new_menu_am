@@ -18,6 +18,7 @@ from models.models import Base
 from api.andpoints.food import food_router
 from api.andpoints.favorite_foods import favorite_foods_router
 from api.andpoints.restaurant import restaurant_router
+from api.andpoints.restaurant_work_time import restaurant_work_time_router
 from api.auth.auth import auth_router
 from api.auth.forgot_password import forgot_router
 
@@ -67,3 +68,4 @@ app.include_router(favorite_foods_router)
 app.include_router(restaurant_router)
 app.include_router(auth_router)
 app.include_router(forgot_router)
+app.include_router(restaurant_work_time_router)
