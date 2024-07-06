@@ -11,7 +11,6 @@ class UserAdd(BaseModel):
 class UserOut(BaseModel):
     name: str
     email: EmailStr
-    # main_photo: bytes
 
 
 class UserLogin(BaseModel):
@@ -32,11 +31,6 @@ class UpdateRestaurant(BaseModel):
     rating: float
 
 
-# class UpdateRestaurantImages(BaseModel):
-#     logo: bytes
-#     background: bytes
-
-
 class UpdateFood(BaseModel):
 
     kind: str
@@ -45,9 +39,8 @@ class UpdateFood(BaseModel):
     food_name: str
     description: str
     restaurant_id: int
-#
-#
-# class UpdateFoodImage(BaseModel):
-#     food_image: str
+
+
+
 
 

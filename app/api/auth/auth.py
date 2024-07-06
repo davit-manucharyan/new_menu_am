@@ -21,11 +21,11 @@ def verify_email(email: str):
     try:
 
         main.cursor.execute("""SELECT email FROM users WHERE email=%s""",
-                        (email,))
+                            (email,))
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-           detail={"message": f"There was a error looking up the user in the authentication pool\n{error}"})
+                       detail={"message": f"There was a error looking up the user in the authentication pool\n{error}"})
 
     email_checked = main.cursor.fetchone()
 
@@ -98,7 +98,7 @@ def add_user(user_data: UserAdd):
 
 
 @auth_router.get("/get-one-user-by-id/{user_id}")
-def get_user_by_id(user_id: int):
+def get_user_by_id(user_id: int, current_user=Depends(security.get_current_user)):
     try:
         main.cursor.execute("""SELECT * FROM users WHERE user_id=%s""",
                             (user_id,))
@@ -126,10 +126,10 @@ def get_user_by_id(user_id: int):
 
 
 @auth_router.delete("/delete-user/{user_id}")
-def delete_user(user_id: int):
+def delete_user(user_id: int, current_user=Depends(security.get_current_user)):
     try:
         main.cursor.execute("""delete from users where user_id=%s""",
-                        (user_id,))
+                            (user_id,))
 
         main.conn.commit()
     except Exception as error:
@@ -146,7 +146,7 @@ def login(login_data: UserLogin):
     user_email = login_data.email
     try:
         main.cursor.execute("""SELECT * FROM users WHERE email=%s""",
-                        (user_email,))
+                            (user_email,))
         user = main.cursor.fetchone()
 
     except Exception as error:
@@ -173,8 +173,11 @@ def login(login_data: UserLogin):
     access_token = security.create_access_token({"user_id": user_id})
 
     return JSONResponse(status_code=status.HTTP_200_OK,
-                        content={"Message": "Successfully logged in! Your access token",
-                                 "access_token": access_token})
+                        content={
+                            "Message": "Successfully logged in! Your access token",
+                            "access_token": access_token,
+                            "user_id": user_id
+                        })
 
 
 @auth_router.get("/get_all_users")
