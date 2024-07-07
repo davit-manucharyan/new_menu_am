@@ -78,7 +78,7 @@ def delete_favorite_food(favorite_food_id: int, user_id: int):
                         content={"message": "Favorite food successfully deleted"})
 
 
-@favorite_foods_router.get("/get all_favorite_foods_by_user_id/{user_id}")
+@favorite_foods_router.get("/get_all_favorite_foods_by_user_id/{user_id}")
 def get_all_favorite_foods_by_user_id(user_id: int):
     try:
         main.cursor.execute("""SELECT * FROM favorite_foods WHERE user_id =%s""",

@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status, APIRouter
 from fastapi.responses import JSONResponse
 
-import main
+
 from services.db_service import get_row, add_row
 from schemas.shemas import RestaurantWorkTimeAdd
 

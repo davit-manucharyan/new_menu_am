@@ -6,7 +6,6 @@ def get_row(table: str, criteria: dict | None):
 
     if criteria != {}:
         criteria_keys = criteria.keys()
-        criteria_values = criteria.values()
 
         i = 1
         for key in criteria_keys:
