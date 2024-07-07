@@ -15,7 +15,7 @@ from fastapi.security.oauth2 import OAuth2PasswordBearer
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
 
-ACCESS_TOKEN_EXPIRE_MINUETS = 120
+ACCESS_TOKEN_EXPIRE_MINUETS = 43200
 ACCESS_TOKEN_ALGORITHM = 'HS256'
 ACCESS_TOKEN_SECRET = 'SECRET'
 

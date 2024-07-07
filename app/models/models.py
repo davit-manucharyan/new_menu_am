@@ -76,7 +76,7 @@ class Restaurant(Base):
     restaurant_email = Column(String, nullable=False, unique=True)
     phone_number = Column(String, nullable=False)
     address = Column(String, nullable=False)
-    logo = Column(String, nullable=False)  # image
+    logo = Column(String, nullable=False)
     background_image = Column(String, nullable=False)
     rating = Column(Float, nullable=False)
 

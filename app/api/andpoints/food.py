@@ -114,14 +114,16 @@ def delete_food(food_id: int):
 
     if target_restaurant is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-
                             detail="Food not found")
+
     try:
-        main.cursor.execute("""DELETE FROM restaurants WHERE restaurant_id=%s""",
-                        (food_id,))
+        main.cursor.execute("""DELETE FROM foods WHERE food_id=%s""",
+                            (food_id,))
 
         main.conn.commit()
+
     except Exception as error:
+        main.conn.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail={"message": "There was an error deleting the food"
                                     f"ERROR: {error}"})

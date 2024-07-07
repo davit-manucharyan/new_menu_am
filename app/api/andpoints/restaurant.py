@@ -135,7 +135,7 @@ def delete_restaurant(restaurant_id: int):
 
     except Exception as error:
         main.conn.rollback()
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail={"message": error})
 
     return JSONResponse(status_code=status.HTTP_200_OK,
