@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, APIRouter
+from fastapi import HTTPException, status, APIRouter, Query
 from fastapi.responses import JSONResponse
 
 import main
@@ -79,27 +79,44 @@ def delete_favorite_food(favorite_food_id: int, user_id: int):
 
 
 @favorite_foods_router.get("/get_all_favorite_foods_by_user_id/{user_id}")
-def get_all_favorite_foods_by_user_id(user_id: int):
+def get_all_favorite_foods_by_user_id(user_id: int, page: int = Query(default=1, ge=1)):
+    per_page = 20
+
+    main.cursor.execute("SELECT count(*) FROM favorite_foods")
+    count = main.cursor.fetchall()[0]['count']
+
+    max_page = (count - 1) // per_page + 1
+
+    if page > max_page:
+        page = max_page
+
+    offset = (page - 1) * per_page
+
     try:
-        main.cursor.execute("""SELECT * FROM favorite_foods WHERE user_id =%s""",
-                            (user_id,))
+        main.cursor.execute("""SELECT * FROM favorite_foods WHERE user_id =%s LIMIT =%s OFFSET =%s""",
+                            (user_id, per_page, offset))
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+                            detail={"message": str(error)})
 
     try:
-        favorite_foods = main.cursor.fetchone()
+        favorite_foods = main.cursor.fetchall()
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+                            detail={f"An error occurred while searching for all favorite foods. ERROR {str(error)}"})
 
-    if favorite_foods is None:
+    if not favorite_foods:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail={"message": f"User with id {user_id} has no favorite foods"})
 
-    return favorite_foods
+    return {
+        "favorite_foods": favorite_foods,
+        "page": page,
+        "total_pages": max_page,
+        "total_foods": count
+    }
 
 
 

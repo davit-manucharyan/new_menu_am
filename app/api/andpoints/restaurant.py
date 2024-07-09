@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, APIRouter, UploadFile, File, Form
+from fastapi import HTTPException, status, APIRouter, UploadFile, File, Form, Query
 from fastapi.responses import JSONResponse
 import os
 import shutil
@@ -169,41 +169,38 @@ def get_restaurant_by_id(restaurant_id: int):
 
 
 @restaurant_router.get("/get_all_restaurants")
-def get_all_restaurants(page: int | None = None):
-
+def get_all_restaurants(page: int = Query(default=1, ge=1)):
     per_page = 20
 
-    if not page:
-        page = 1
-
     main.cursor.execute("SELECT count(*) FROM restaurants")
-    count = main.cursor.fetchall()[0]['count']
+    count = main.cursor.fetchone()['count']
 
-    max_page = count / per_page
+    max_page = (count - 1) // per_page + 1
 
-    if page > max_page or page < 1:
-        page = 1
+    if page > max_page:
+        page = max_page
 
     offset = (page - 1) * per_page
 
     try:
-        main.cursor.execute(F"SELECT * FROM restaurants LIMIT {per_page} OFFSET {offset}")
-
+        main.cursor.execute("SELECT * FROM restaurants LIMIT %s OFFSET %s", (per_page, offset))
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+                            detail={"message": str(error)})
 
     try:
-
         restaurants = main.cursor.fetchall()
-
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An error occurred while searching for all restaurants"
-                            f"ERROR: {error}")
+                            detail=f"An error occurred while searching for all restaurants. ERROR: {str(error)}")
 
-    if restaurants is None:
+    if not restaurants:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Restaurants were not found!")
+                            detail="Restaurants were not found!")
 
-    return restaurants
+    return {
+        "restaurants": restaurants,
+        "page": page,
+        "total_pages": max_page,
+        "total_restaurants": count
+    }

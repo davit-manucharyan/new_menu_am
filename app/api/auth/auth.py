@@ -3,7 +3,7 @@ import datetime
 
 
 # FastAPI
-from fastapi import HTTPException, status, Depends, APIRouter
+from fastapi import HTTPException, status, Depends, APIRouter, Query
 from fastapi.responses import JSONResponse
 import main
 from core.confirm_registration import mail_verification_email
@@ -181,13 +181,28 @@ def login(login_data: UserLogin):
 
 
 @auth_router.get("/get_all_users")
-def get_all_restaurants():
+def get_all_users(page: int = Query(default=1, ge=1)):
+    per_page = 20
+
+    main.cursor.execute("SELECT count(*) FROM users")
+    count = main.cursor.fetchall()[0]['count']
+
+    max_page = (count - 1) // per_page + 1
+
+    if page > max_page:
+        page = max_page
+
+    offset = (page - 1) * per_page
+
     try:
-        main.cursor.execute("""SELECT * FROM users""")
+
+        main.cursor.execute("""
+                   SELECT user_id, name, email, phone_number, address, status, created_at 
+                   FROM users LIMIT %s OFFSET %s""", (per_page, offset))
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+                            detail={"message": str(error)})
 
     try:
 
@@ -195,11 +210,16 @@ def get_all_restaurants():
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An error occurred while searching for all restaurants"
-                            f"ERROR: {error}")
+                            detail=f"An error occurred while searching for all users. ERROR: {str(error)}")
 
-    if users is None:
+    if not users:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"Restaurants were not found!")
+                            detail=f"Users were not found!")
 
-    return users
+    return {
+        "users": users,
+        "page": page,
+        "total_pages": max_page,
+        "total_users": count
+    }
+
