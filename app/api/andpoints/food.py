@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, APIRouter, UploadFile, File, Form
+from fastapi import HTTPException, status, APIRouter, UploadFile, File, Form, Query
 from fastapi.responses import JSONResponse
 import datetime
 import os
@@ -159,13 +159,25 @@ def get_food_by_id(food_id: int):
 
 
 @food_router.get("/get_all_foods")
-def get_all_foods():
+def get_all_foods(page: int = Query(default=1, ge=1)):
+    per_page = 20
+
+    main.cursor.execute("SELECT count(*) FROM foods")
+    count = main.cursor.fetchall()[0]['count']
+
+    max_page = (count - 1) // per_page + 1
+
+    if page > max_page:
+        page = max_page
+
+    offset = (page - 1) * per_page
+
     try:
-        main.cursor.execute("""SELECT * FROM foods""")
+        main.cursor.execute(f"""SELECT * FROM foods LIMIT %s OFFSET %s""", (per_page, offset))
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail={"message": error})
+                            detail={"message": str(error)})
 
     try:
 
@@ -173,12 +185,16 @@ def get_all_foods():
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An error occurred while searching for all foods"
-                            f"ERROR: {error}")
+                            detail=f"An error occurred while searching for all foods. ERROR: {str(error)}")
 
-    if foods is None:
+    if not foods:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Foods were not found!")
 
-    return foods
+    return {
+        "foods": foods,
+        "page": page,
+        "total_pages": max_page,
+        "total_foods": count
+    }
 
