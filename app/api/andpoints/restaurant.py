@@ -169,9 +169,25 @@ def get_restaurant_by_id(restaurant_id: int):
 
 
 @restaurant_router.get("/get_all_restaurants")
-def get_all_restaurants():
+def get_all_restaurants(page: int | None = None):
+
+    per_page = 20
+
+    if not page:
+        page = 1
+
+    main.cursor.execute("SELECT count(*) FROM restaurants")
+    count = main.cursor.fetchall()[0]['count']
+
+    max_page = count / per_page
+
+    if page > max_page or page < 1:
+        page = 1
+
+    offset = (page - 1) * per_page
+
     try:
-        main.cursor.execute("""SELECT * FROM restaurants""")
+        main.cursor.execute(F"SELECT * FROM restaurants LIMIT {per_page} OFFSET {offset}")
 
     except Exception as error:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
