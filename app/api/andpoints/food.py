@@ -17,7 +17,6 @@ def add_food(restaurant_id: int, kind: str = Form(...), price: int = Form(...),
 
     current_date_time = (datetime.datetime.now().strftime('%B %d %Y - %H_%M_%S'))
     image_food_url = f"{os.getcwd()}/static/images/food/{current_date_time}{image_food.filename}"
-
     try:
         main.cursor.execute("""INSERT INTO foods (kind, price, cook_time,
                         image, food_name, description, restaurant_id) VALUES (%s, %s, %s, %s, %s, %s, %s)""",
@@ -164,7 +163,8 @@ def get_all_foods(page: int = Query(default=1, ge=1)):
 
     main.cursor.execute("SELECT count(*) FROM foods")
     count = main.cursor.fetchall()[0]['count']
-
+    if count == 0:
+        return []
     max_page = (count - 1) // per_page + 1
 
     if page > max_page:

@@ -84,6 +84,8 @@ def get_all_favorite_foods_by_user_id(user_id: int, page: int = Query(default=1,
 
     main.cursor.execute("SELECT count(*) FROM favorite_foods")
     count = main.cursor.fetchall()[0]['count']
+    if count == 0:
+        return []
 
     max_page = (count - 1) // per_page + 1
 
